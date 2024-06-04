@@ -55,7 +55,13 @@ pip install .
 
 4. Adjust your enviroment variables
 - Copy .env.example to a new file named .env
+```bash
+cp .env.example .env
+```
 - Read and update the .env file with your specific configuration
+```bash
+nano .env
+```
 
 ## Hugging Face Setup
 
