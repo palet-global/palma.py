@@ -1,0 +1,7 @@
+starlette
+uvicorn
+python-dotenv
+torch
+transformers
+accelerate
+huggingface_hub[cli]
