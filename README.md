@@ -1,17 +1,18 @@
 
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+![Logo](palma.py.jpg)
 
 
 # Palma.py
 
 Inference of Meta LLaMA models (and others) with `Starlette` and Hugging Face `Transformers`
 
-
 ## Description
 
 The goal of `Palma.py` is to enable LLM inference with minimal setup via REST API using python.
-- Starlette implementation with minimal dependencies
+- Starlette implementation with no dependencies
 - Usage of Hugging Face Transformers Library for Inference
+- Queue support for multiple inference requests
+- Healthchecks support for load balancer
 - Support for Apple Metal, Cuda and CPU
 
 **Supported Platforms**
@@ -24,6 +25,7 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 - LLaMA 2 
 - LLaMA 3
 *We need help testing more models
+
 ## Installation
 
 1. Clone and download this repository 
@@ -37,6 +39,7 @@ cd palma.py
 
 ```bash
 # create virtual enviroment
+# python3 if mac
 python -m venv venv
 
 # enter virtual enviroment
@@ -50,8 +53,9 @@ pip install .
 ```
 
 4. Adjust your enviroment variables
-- Copy .env.example to a new file named .env.
-- Update the .env file with your specific variables
+- Copy .env.example to a new file named .env
+- Read and update the .env file with your specific configuration
+
 ## Hugging Face Setup
 
 To run `Palma.py` you need to have a Hugging Face account and be login into your account via token.
@@ -69,6 +73,7 @@ source venv/bin/activate
 # login to hugging face
 huggingface-cli login
 ```
+
 ## Run
 
 On the project directory
@@ -81,6 +86,7 @@ source venv/bin/activate
 uvicorn server:app --host 127.0.0.1 --port 8000
 ```
 *The model will be downloaded automatically once you run the server in the virtual enviroment
+
 ## Usage
 
 ### Inference with no streaming
@@ -165,14 +171,14 @@ data: " about"
 data: "hearty!<|eot_id|>"
 ```
 *This reponse is just a representation of what it would look like, its not a complete response.
+
 ## Optimizations
 
 - Make the code `Typed Python`
-
 
 ## Contributing
 
 Contributions are always welcome!
 
-See `contributing.md` for ways to get started.
+See [contributing guidelines](CONTRIBUTING.md) for ways to get started.
 
