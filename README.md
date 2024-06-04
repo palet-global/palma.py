@@ -138,7 +138,7 @@ curl -N -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/stream
 
 `<|eot_id|>` indicates the end of the streaming
 
-```json
+```sse
 data: "Arr"
 
 data: "rr"
