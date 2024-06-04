@@ -24,7 +24,8 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 - LLaMA 
 - LLaMA 2 
 - LLaMA 3
-*We need help testing more models
+
+`We need help testing more models`
 
 ## Installation
 
