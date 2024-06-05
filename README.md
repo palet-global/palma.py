@@ -19,19 +19,19 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 
 ![Palma.py Architecture](img/palma.py_architecture.jpg)
 
-1. REST API:
+1. **REST API:**
 - The starting point where the main thread operates.
 
-2. Background Task Creation:
+2. **Background Task Creation:**
 - A background task is created when an endpoint is called and work is sent off the main thread.
 - This enables concurrency as the main thread can continue processing other tasks.
 
-3. Shared Executor and Sub-Thread:
+3. **Shared Executor and Sub-Thread:**
 - In the background task, a shared executor is instantiated.
 - The shared executor creates sub-threads.
 - Anything above the enviroment variable `THREADS_MAX_WORKERS` limit, will be queue.
 
-4. Inference in Sub-Thread:
+4. **Inference in Sub-Thread:**
 - The sub-threads perform inference tasks in parallel.
 - This enables parallelism as multiple sub-threads run simultaneously.
 
