@@ -15,6 +15,11 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 - Queue and Threads support for multiple inference requests
 - Support for Apple Metal, CUDA and CPU
 
+**Supported Platforms**
+- MacOS
+- Linux
+- Windows
+
 ### Palma.py Architecture
 
 ![Palma.py Architecture](img/palma.py_architecture.jpg)
@@ -35,12 +40,7 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 - The sub-threads perform inference tasks in parallel.
 - This enables parallelism as multiple sub-threads run simultaneously.
 
-**Supported Platforms**
-- MacOS
-- Linux
-- Windows
-
-**Supported Models**
+### Supported Models
 - LLaMA 
 - LLaMA 2 
 - LLaMA 3
