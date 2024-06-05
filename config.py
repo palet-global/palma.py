@@ -1,5 +1,3 @@
-# Env
-
 import os
 import torch
 from dotenv import load_dotenv, find_dotenv
@@ -32,13 +30,12 @@ def get_env_variable(name, cast_type=str, default=None):
 # General Configuration
 
 DEBUG = get_env_variable('DEBUG', str_to_bool, False)
-THREADS_MAX_WORKERS = get_env_variable('THREADS_MAX_WORKERS', int)
+THREADS_MAX_WORKERS = get_env_variable('THREADS_MAX_WORKERS', int, 10)
 
 # Model Settings
 
-MODEL_ID = get_env_variable('MODEL_ID')
-
-CONVERT_TOKENS_TO_IDS = get_env_variable('CONVERT_TOKENS_TO_IDS')
+MODEL_ID = get_env_variable('MODEL_ID', str, "meta-llama/Meta-Llama-3-8B-Instruct")
+CONVERT_TOKENS_TO_IDS = get_env_variable('CONVERT_TOKENS_TO_IDS', str, "<|eot_id|>")
 
 # Torch DType
 # We can expand support here for other types
@@ -50,10 +47,10 @@ else:
 
 # Model Inference Settings
 
-DEFAULT_DO_SAMPLE = get_env_variable('DEFAULT_DO_SAMPLE', str_to_bool)
-DEFAULT_MAX_NEW_TOKENS = get_env_variable('DEFAULT_MAX_NEW_TOKENS', int)
-DEFAULT_TEMPERATURE = get_env_variable('DEFAULT_TEMPERATURE', float)
-DEFAULT_TOP_P = get_env_variable('DEFAULT_TOP_P', float)
+DEFAULT_DO_SAMPLE = get_env_variable('DEFAULT_DO_SAMPLE', str_to_bool, True)
+DEFAULT_MAX_NEW_TOKENS = get_env_variable('DEFAULT_MAX_NEW_TOKENS', int, 256)
+DEFAULT_TEMPERATURE = get_env_variable('DEFAULT_TEMPERATURE', float, 0.6)
+DEFAULT_TOP_P = get_env_variable('DEFAULT_TOP_P', float, 0.7)
 
 # CORS
 

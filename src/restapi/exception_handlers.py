@@ -1,6 +1,5 @@
 import src.restapi.constants as constants
 import src.restapi.response_builder as response_builder
-import src.restapi.request_middleware as request_middleware
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.exceptions import HTTPException

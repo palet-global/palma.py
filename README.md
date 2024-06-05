@@ -11,7 +11,7 @@ Inference of Meta LLaMA models (and others) with `Starlette` and Hugging Face `T
 The goal of `Palma.py` is to enable LLM inference with minimal setup via REST API using python.
 - Starlette implementation with no dependencies
 - Usage of Hugging Face Transformers Library for Inference
-- Queue support for multiple inference requests
+- Queue and Threads support for multiple inference requests concurrently
 - Healthchecks support for load balancer
 - Support for Apple Metal, Cuda and CPU
 

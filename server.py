@@ -1,12 +1,10 @@
 from version import palmapy_version
+import src.ai.model_load as model_load
 
 from starlette.routing import Route
 from starlette.middleware import Middleware
 from starlette.applications import Starlette
-from concurrent.futures import ThreadPoolExecutor
 from starlette.middleware.gzip import GZipMiddleware
-
-from transformers import AutoTokenizer, AutoModelForCausalLM
 
 import src.restapi.constants as constants
 import src.routes.route_inference as route_inference
@@ -16,56 +14,22 @@ import src.restapi.request_middleware as request_middleware
 from src.restapi.exception_handlers import exception_handlers_list
 
 from config import (
-    model_gpu, 
-    DEBUG,
-    THREADS_MAX_WORKERS,
-    MODEL_ID,
-    CONVERT_TOKENS_TO_IDS,
-    TORCH_DTYPE
+    DEBUG
 )
 
 # Lets globally load the model
-
-# Load the tokens
-tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-
-# Load the model
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_ID,
-    torch_dtype=TORCH_DTYPE,
-    device_map=model_gpu.device,
-)
-
-# Lets set the terminators
-terminators = [
-    tokenizer.eos_token_id,
-    tokenizer.convert_tokens_to_ids(CONVERT_TOKENS_TO_IDS)
-]
-
-# Shared ThreadPoolExecutor
-shared_executor = ThreadPoolExecutor(max_workers=THREADS_MAX_WORKERS)
-
-# Dependency injection to routes
-async def get_dependencies():
-    return {
-            "tokenizer": tokenizer, 
-            "model": model, 
-            "terminators": terminators, 
-            "shared_executor": shared_executor
-    }
-
-# route_inference handler with dependency injection
-async def route_inference_dependencies(request):
-    dependencies = await get_dependencies()
-    return await route_inference.inference(request, **dependencies)
-
-# route_stream handler with dependency injection
-async def route_stream_dependencies(request):
-    dependencies = await get_dependencies()
-    return await route_stream.stream(request, **dependencies)
+model_dependencies = model_load.init()
 
 # route baseline
 base_route = "/v" + palmapy_version
+
+# route_inference handler with dependency injection
+async def route_inference_dependencies(request):
+    return await route_inference.inference(request, **model_dependencies)
+
+# route_stream handler with dependency injection
+async def route_stream_dependencies(request):
+    return await route_stream.stream(request, **model_dependencies)
 
 # Create the Starlette application
 app = Starlette(
