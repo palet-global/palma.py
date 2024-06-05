@@ -4,7 +4,7 @@
 
 # Palma.py
 
-A lightweight REST API server that serves local models using `Starlette` and Hugging Face `Transformers`, with CUDA and Metal support, as well as concurrent requests.
+A lightweight REST API server that runs open source models `locally` or in `clouds` like lambdalabs. It uses `Starlette` and Hugging Face `Transformers`, with CUDA and Metal support, as well as concurrent requests.
 
 ## Description
 
