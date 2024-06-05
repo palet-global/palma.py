@@ -42,17 +42,22 @@ class AsyncTextIteratorStreamer(TextStreamer):
 async def start_streaming(response_queue, json_data, tokenizer, model, terminators, shared_executor):
     loop = asyncio.get_event_loop()
     streamer = AsyncTextIteratorStreamer(tokenizer, response_queue, True)
-    await loop.run_in_executor(shared_executor, lambda: asyncio.run(streaming_wrapper(json_data, tokenizer, model, terminators, streamer)))
+    await loop.run_in_executor(
+            shared_executor, 
+            lambda: asyncio.run(
+                streaming_wrapper(streamer, json_data, tokenizer, model, terminators)
+            )
+        )
         
 # Define an asynchronous wrapper function for model streaming
-async def streaming_wrapper(json_data, tokenizer, model, terminators, streamer):
-    streaming(json_data, tokenizer, model, terminators, streamer)
+async def streaming_wrapper(streamer, json_data, tokenizer, model, terminators):
+    streaming(streamer, json_data, tokenizer, model, terminators)
     
     # Signal the end of streaming by calling the end method on the streamer
     streamer.end()
         
 # Function for streaming inference
-def streaming(json_data, tokenizer, model, terminators, streamer):
+def streaming(streamer, json_data, tokenizer, model, terminators):
 
     # Lets sanitize the parameters
     (messages, max_new_tokens, do_sample, temperature, top_p) = model_utils.get_safe_parameters(json_data)

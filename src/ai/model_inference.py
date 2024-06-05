@@ -8,7 +8,12 @@ from config import (
 # Run the generate_wrapper coroutine in the executor
 async def start_generating(response_queue, json_data, tokenizer, model, terminators, shared_executor):
     loop = asyncio.get_event_loop()
-    await loop.run_in_executor(shared_executor, lambda: asyncio.run(generate_wrapper(response_queue, json_data, tokenizer, model, terminators)))
+    await loop.run_in_executor(
+            shared_executor, 
+            lambda: asyncio.run(
+                generate_wrapper(response_queue, json_data, tokenizer, model, terminators)
+            )
+        )
 
 # Define an asynchronous wrapper function for model inference
 async def generate_wrapper(response_queue, json_data, tokenizer, model, terminators):
