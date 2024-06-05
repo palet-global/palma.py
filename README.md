@@ -1,5 +1,5 @@
 
-![Logo](palma.py.jpg)
+![Logo](img/palma.py.jpg)
 
 
 # Palma.py
@@ -17,6 +17,8 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 
 ### Palma.py Architecture
 
+![Palma.py Architecture](img/palma.py_architecture.jpg)
+
 1. REST API:
 - The starting point where the main thread operates.
 
@@ -27,11 +29,11 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 3. Shared Executor and Sub-Thread:
 - In the background task, a shared executor is instantiated.
 - The shared executor creates sub-threads.
+- Anything above the enviroment variable `THREADS_MAX_WORKERS` limit, will be queue.
 
 4. Inference in Sub-Thread:
 - The sub-threads perform inference tasks in parallel.
 - This enables parallelism as multiple sub-threads run simultaneously.
-- Anything above the enviroment variable `THREADS_MAX_WORKERS` limit, will be queue.
 
 **Supported Platforms**
 - MacOS
