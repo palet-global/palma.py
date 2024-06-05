@@ -4,16 +4,34 @@
 
 # Palma.py
 
-A lightweight REST API server that runs open source models `locally` or in `clouds` like lambdalabs. It uses `Starlette` and Hugging Face `Transformers`, with CUDA and Metal support, as well as concurrent requests.
+A lightweight REST API server that runs open source models `locally` or in the `cloud`. It uses `Starlette` and Hugging Face `Transformers`, with CUDA and Metal support, as well as concurrent and parallel requests.
 
 ## Description
 
 The goal of `Palma.py` is to enable LLM inference with minimal setup via REST API using Python.
-- Starlette implementation with no dependencies
+- Uses a lightweight `Starlette` implementation with no dependencies
+- `Healthchecks` support for load balancer integration
 - Uses Hugging Face `Transformers` library for inference
-- Queue and Threads support for multiple inference requests concurrently
-- Healthchecks support for load balancer
+- Queue and Threads support for multiple inference requests
 - Support for Apple Metal, CUDA and CPU
+
+### Palma.py Architecture
+
+1. REST API:
+- The starting point where the main thread operates.
+
+2. Background Task Creation:
+- A background task is created when an endpoint is called and work is sent off the main thread.
+- This enables concurrency as the main thread can continue processing other tasks.
+
+3. Shared Executor and Sub-Thread:
+- In the background task, a shared executor is instantiated.
+- The shared executor creates sub-threads.
+
+4. Inference in Sub-Thread:
+- The sub-threads perform inference tasks in parallel.
+- This enables parallelism as multiple sub-threads run simultaneously.
+- Anything above the enviroment variable `THREADS_MAX_WORKERS` limit, will be queue.
 
 **Supported Platforms**
 - MacOS
