@@ -4,16 +4,16 @@
 
 # Palma.py
 
-Inference of Meta LLaMA models (and others) with `Starlette` and Hugging Face `Transformers`
+A lightweight REST API server that serves local models using `Starlette` and Hugging Face `Transformers`, with CUDA and Metal support, as well as concurrent requests.
 
 ## Description
 
-The goal of `Palma.py` is to enable LLM inference with minimal setup via REST API using python.
+The goal of `Palma.py` is to enable LLM inference with minimal setup via REST API using Python.
 - Starlette implementation with no dependencies
-- Usage of Hugging Face Transformers Library for Inference
+- Uses Hugging Face `Transformers` library for inference
 - Queue and Threads support for multiple inference requests concurrently
 - Healthchecks support for load balancer
-- Support for Apple Metal, Cuda and CPU
+- Support for Apple Metal, CUDA and CPU
 
 **Supported Platforms**
 - MacOS
@@ -36,7 +36,7 @@ git clone https://github.com/palet-global/palma.py
 cd palma.py
 ```
     
-2. Setup your Python enviroment
+2. Set up your Python enviroment
 
 ```bash
 # create virtual enviroment
@@ -65,13 +65,13 @@ nano .env
 
 ## Hugging Face Setup
 
-To run `Palma.py` you need to have a Hugging Face account and be login into your account via token.
+To run Palma.py, you need to create (or be logged into) an account on Hugging Face and log in using an access token from your account in your Python environment.
 
-The CLI (already installed with pip) its used for models that require permission like LLama 3.
+The CLI (already installed with pip) is used for models that require permission like LLama 3.
 
 Get a token from https://huggingface.co/settings/token
 
-Then login to Hugging Face in your python enviroment
+Then log into Hugging Face in your Python enviroment
  
 ```bash
 # enter virtual enviroment
@@ -123,7 +123,7 @@ curl -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/inference
 
 ### Inference with streaming
 
-This will return the tokens as soon they are newly generated, using Server-Sent Events (SSE) format.
+This will stream output tokens as soon they are generated using Server-Sent Events (SSE) format.
 
 ```shell
 curl -N -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/stream \
@@ -177,7 +177,7 @@ data: " about"
 
 data: "hearty!<|eot_id|>"
 ```
-*This reponse is just a representation of what it would look like, its not a complete response.
+*This reponse is just a representation of what it would look like. It is not a complete response.
 
 ## Optimizations
 
