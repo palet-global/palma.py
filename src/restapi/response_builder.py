@@ -1,6 +1,7 @@
 import json
 import src.restapi.constants as constants
 
+# Set error response to return to the client
 def set_error_response(error_code, override_message):
     if error_code == "invalid_request":
         status_code = 400
@@ -37,7 +38,7 @@ def set_error_response(error_code, override_message):
         message = override_message
 
     # Lets package it into a json format
-    json_error = {
+    json_data = {
         "error": {
             "code": error_code,
             "message": message,
@@ -46,6 +47,6 @@ def set_error_response(error_code, override_message):
     }
 
     # Pretty-print JSON error
-    pretty_json = json.dumps(json_error, indent=4)
+    json_error = json.dumps(json_data, indent=4)
     
-    return pretty_json, status_code
+    return json_error, status_code

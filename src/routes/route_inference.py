@@ -30,5 +30,5 @@ async def inference(request, tokenizer, model, terminators, shared_executor):
     )
 
     # Return the output as a JSON response
-    json = await model_inference.catch_token(response_queue)
-    return Response(content=json, media_type=constants.HTTP_DEFAULT_CONTENT_TYPE, status_code=200)
+    json_data = await model_inference.catch_token(response_queue)
+    return Response(content=json_data, media_type=constants.HTTP_DEFAULT_CONTENT_TYPE, status_code=200)

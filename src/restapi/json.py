@@ -2,7 +2,7 @@ import json
 import src.utils.validators as validators
 import src.restapi.response_builder as response_builder
 
-# Functions that validate the json request according to the requirements of the code
+# Process JSON Requests
 # Check for valid messages and valid json body
 # returns (json_data, json_error, status_code)
 async def read_json_request(request):
