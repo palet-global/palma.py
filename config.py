@@ -1,5 +1,6 @@
 import os
 import torch
+import logging
 from dotenv import load_dotenv, find_dotenv
 
 # Import packages from src
@@ -10,6 +11,10 @@ import src.ai.model_gpu as model_gpu
 __all__ = [
     'model_gpu',
 ]
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
 
 # Check if the .env file exists and load it
 dotenv_path = find_dotenv()
@@ -44,6 +49,12 @@ if os.getenv('TORCH_DTYPE') == "bfloat16":
 # Default value
 else:
     TORCH_DTYPE = torch.bfloat16
+
+# Set the environment variable for MPS fallback
+os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
+
+# What device are we using
+logger.info(f"Using device: {model_gpu.device}")
 
 # Model Inference Settings
 
