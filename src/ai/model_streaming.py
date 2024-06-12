@@ -1,10 +1,12 @@
 import json
+import time
 import asyncio
 from typing import Optional
 import src.ai.model_utils as model_utils
 from transformers import AutoTokenizer, TextStreamer
 from config import (
-    model_gpu
+    model_gpu,
+    MODEL_ID
 )
 
 class AsyncTextIteratorStreamer(TextStreamer):
@@ -60,7 +62,7 @@ async def streaming_wrapper(streamer, json_data, tokenizer, model, terminators):
 def streaming(streamer, json_data, tokenizer, model, terminators):
 
     # Lets sanitize the parameters
-    (messages, max_new_tokens, do_sample, temperature, top_p) = model_utils.get_safe_parameters(json_data)
+    (messages, max_tokens, do_sample, temperature, top_p) = model_utils.get_safe_parameters(json_data)
 
     # Lets proccess the messages template
     input_ids = tokenizer.apply_chat_template(
@@ -82,7 +84,7 @@ def streaming(streamer, json_data, tokenizer, model, terminators):
         input_ids,
         attention_mask=attention_mask,
         streamer=streamer,
-        max_new_tokens=max_new_tokens,
+        max_new_tokens=max_tokens,
         eos_token_id=terminators,
         pad_token_id=tokenizer.pad_token_id,
         do_sample=do_sample,
@@ -91,14 +93,22 @@ def streaming(streamer, json_data, tokenizer, model, terminators):
     )
 
 # Catch the token that are being streamed
+# https://platform.openai.com/docs/api-reference/chat/create
 async def catch_token(response_queue):
     while True:
         # Catch the token that are being generated
         outputs = await response_queue.get()
 
+        # Get the current Unix timestamp
+        current_timestamp = int(time.time())
+
         # If no more tokens, lets end streaming
         if outputs is None:
+            json_response = json.dumps({"object":"chat.completion.chunk","created":current_timestamp,"model":MODEL_ID,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]})
+            yield f"data: {json_response}\n\n"
+            yield f"data: [DONE]"
             break
 
         # Stream data
-        yield f"data: {json.dumps(outputs)}\n\n"
+        json_response = json.dumps({"object":"chat.completion.chunk","created":current_timestamp,"model":MODEL_ID,"choices":[{"index":0,"delta":{"content":outputs},"finish_reason":None}]})
+        yield f"data: {json_response}\n\n"

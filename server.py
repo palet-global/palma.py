@@ -1,4 +1,3 @@
-from version import palmapy_version
 import src.ai.model_load as model_load
 
 from starlette.routing import Route
@@ -8,7 +7,6 @@ from starlette.middleware.gzip import GZipMiddleware
 
 import src.restapi.constants as constants
 import src.routes.route_inference as route_inference
-import src.routes.route_stream as route_stream
 import src.routes.route_healthcheck as route_healthcheck
 import src.restapi.request_middleware as request_middleware
 from src.restapi.exception_handlers import exception_handlers_list
@@ -20,16 +18,12 @@ from config import (
 # Lets globally load the model
 model_dependencies = model_load.init()
 
-# route baseline
-base_route = "/v" + palmapy_version
+# route baseline open ai version
+base_route = "/v1"
 
 # route_inference handler with dependency injection
 async def route_inference_dependencies(request):
     return await route_inference.inference(request, **model_dependencies)
-
-# route_stream handler with dependency injection
-async def route_stream_dependencies(request):
-    return await route_stream.stream(request, **model_dependencies)
 
 # Create the Starlette application
 app = Starlette(
@@ -42,13 +36,9 @@ app = Starlette(
         Route(base_route + "/healthcheck", request_middleware.options_handler_get, methods=["OPTIONS"]),
         Route(base_route + "/healthcheck", route_healthcheck.healthcheck, methods=["GET"]),
         
-        # Create a route for the standard inference, accessible via POST method
-        Route(base_route + "/inference", request_middleware.options_handler_post, methods=["OPTIONS"]),
-        Route(base_route + "/inference", route_inference_dependencies, methods=["POST"]),
-        
-        # Create a route for the streaming tokens, accessible via POST method
-        Route(base_route + "/stream", request_middleware.options_handler_post, methods=["OPTIONS"]),
-        Route(base_route + "/stream", route_stream_dependencies, methods=["POST"]),
+        # Create a route for the standard OPEN AI inference, accessible via POST method
+        Route(base_route + "/chat/completions", request_middleware.options_handler_post, methods=["OPTIONS"]),
+        Route(base_route + "/chat/completions", route_inference_dependencies, methods=["POST"]),
     ],
 
     # Define the middlewares needed

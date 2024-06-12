@@ -1,8 +1,10 @@
 import json
+import time
 import asyncio
 import src.ai.model_utils as model_utils
 from config import (
-    model_gpu
+    model_gpu,
+    MODEL_ID
 )
 
 # Run the generate_wrapper coroutine in the executor
@@ -23,7 +25,7 @@ async def generate_wrapper(response_queue, json_data, tokenizer, model, terminat
 async def generate(response_queue, json_data, tokenizer, model, terminators):
 
     # Lets sanitize the parameters
-    (messages, max_new_tokens, do_sample, temperature, top_p) = model_utils.get_safe_parameters(json_data)
+    (messages, max_tokens, do_sample, temperature, top_p) = model_utils.get_safe_parameters(json_data)
 
     # Lets proccess the messages data
     input_ids = tokenizer.apply_chat_template(
@@ -44,7 +46,7 @@ async def generate(response_queue, json_data, tokenizer, model, terminators):
     outputs = model.generate(
         input_ids,
         attention_mask=attention_mask,
-        max_new_tokens=max_new_tokens,
+        max_new_tokens=max_tokens,
         eos_token_id=terminators,
         pad_token_id=tokenizer.pad_token_id,
         do_sample=do_sample,
@@ -60,13 +62,29 @@ async def generate(response_queue, json_data, tokenizer, model, terminators):
     await response_queue.put(response)
 
 # Catch the generated tokens
+# https://platform.openai.com/docs/api-reference/chat/create
 async def catch_token(response_queue):
     # Catch the token that are being generated
     outputs = await response_queue.get()
 
+    # Get the current Unix timestamp
+    current_timestamp = int(time.time())
+
     # Json response
     json_response = {
-        "data": outputs,
+        "object": "chat.completion",
+        "created": current_timestamp,
+        "model": MODEL_ID,
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": outputs 
+                },
+                "finish_reason": "stop"
+            }
+        ]
     }
 
     # Do NOT use pretty-print here as its 3x slower than normal dump

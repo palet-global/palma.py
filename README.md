@@ -14,6 +14,7 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 - Queue and Threads support for multiple inference requests
 - Support for Apple Metal, CUDA and CPU
 - Support for CPU fallback on Apple Metal
+- Support for OpenAI API format, so you can use any library built for OpenAI
 
 **Supported Platforms**
 - MacOS
@@ -119,15 +120,14 @@ uvicorn server:app --host 127.0.0.1 --port 8000
 ### Inference with no streaming
 
 ```shell
-curl -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/inference \
+curl -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v1/chat/completions \
      -H "Content-Type: application/json" \
      -d '{
            "messages": [
              {"role": "system", "content": "You are a pirate chatbot who always responds in pirate speak!"},
              {"role": "user", "content": "Whats the capital of Puerto Rico?"}
            ],
-           "max_new_tokens": 256,
-           "do_sample": true,
+           "max_tokens": 256,
            "temperature": 0.6,
            "top_p": 0.7
          }'
@@ -137,7 +137,19 @@ curl -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/inference
 
 ```json
 {
-    "data": "Arrrr, ye landlubber! Ye be askin' about the capital o' Puerto Rico, eh? Well, matey, I be tellin' ye it be San Juan! That be the place where the treasure o' history and culture be hidden, savvy? So hoist the colors and set a course fer San Juan, me hearty!"
+    "object": "chat.completion",
+    "created": 1718161474,
+    "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "Arrrr, ye landlubber! Ye be askin' about the capital o' Puerto Rico, eh? Well, matey, I be tellin' ye it be San Juan! Aye, that be the place where the scurvy dogs o' the government be makin' their decisions, savvy? So hoist the colors and set course fer San Juan, me hearty!"
+            },
+            "finish_reason": "stop"
+        }
+    ]
 }
 ```
 
@@ -146,58 +158,48 @@ curl -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/inference
 This will stream output tokens as soon they are generated using Server-Sent Events (SSE) format.
 
 ```shell
-curl -N -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v0.1.0/stream \
+curl -w '\nTime: %{time_total}\n' -X POST http://127.0.0.1:8000/v1/chat/completions \
      -H "Content-Type: application/json" \
      -d '{
            "messages": [
              {"role": "system", "content": "You are a pirate chatbot who always responds in pirate speak!"},
              {"role": "user", "content": "Whats the capital of Puerto Rico?"}
            ],
-           "max_new_tokens": 256,
-           "do_sample": true,
+           "max_tokens": 256,
            "temperature": 0.6,
-           "top_p": 0.7
+           "top_p": 0.7,
+           "stream": true
          }'
 ```
 
 **Response**
 
-`<|eot_id|>` indicates the end of the streaming
+`<|eot_id|>` indicates the end of the streaming also the standard OpenAI `"finish_reason": "stop"`
 
 ```sse
-data: "Arr"
+{"object": "chat.completion.chunk", "created": 1718170659, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": "fair "}, "finish_reason": null}]}
 
-data: "rr"
+{"object": "chat.completion.chunk", "created": 1718170659, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": ""}, "finish_reason": null}]}
 
-data: ","
+{"object": "chat.completion.chunk", "created": 1718170659, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": "city, "}, "finish_reason": null}]}
 
-data: " sh"
+{"object": "chat.completion.chunk", "created": 1718170659, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": ""}, "finish_reason": null}]}
 
-data: "iver"
+{"object": "chat.completion.chunk", "created": 1718170659, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": ""}, "finish_reason": null}]}
 
-data: " me"
+{"object": "chat.completion.chunk", "created": 1718170660, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": "savvy?<|eot_id|>"}, "finish_reason": null}]}
 
-data: " tim"
+{"object": "chat.completion.chunk", "created": 1718170660, "model": "meta-llama/Meta-Llama-3-8B-Instruct", "choices": [{"index": 0, "delta": {"content": ""}, "finish_reason": "stop"}]}
 
-data: "bers"
-
-data: "!"
-
-data: " Ye"
-
-data: " be"
-
-data: " ask"
-
-data: "in"
-
-data: "'"
-
-data: " about"
-
-data: "hearty!<|eot_id|>"
+data: [DONE]
 ```
 *This reponse is just a representation of what it would look like. It is not a complete response.
+
+### Health Checks
+
+```shell
+curl -N -w '\nTime: %{time_total}\n' -X GET http://127.0.0.1:8000/v1/healthcheck
+```
 
 ## Optimizations
 

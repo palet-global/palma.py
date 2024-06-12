@@ -59,7 +59,7 @@ logger.info(f"Using device: {model_gpu.device}")
 # Model Inference Settings
 
 DEFAULT_DO_SAMPLE = get_env_variable('DEFAULT_DO_SAMPLE', str_to_bool, True)
-DEFAULT_MAX_NEW_TOKENS = get_env_variable('DEFAULT_MAX_NEW_TOKENS', int, 256)
+DEFAULT_MAX_TOKENS = get_env_variable('DEFAULT_MAX_TOKENS', int, 256)
 DEFAULT_TEMPERATURE = get_env_variable('DEFAULT_TEMPERATURE', float, 0.6)
 DEFAULT_TOP_P = get_env_variable('DEFAULT_TOP_P', float, 0.7)
 
