@@ -70,7 +70,20 @@ source venv/bin/activate
 
 3. In the top-level directory run
 
+If using AMD GPU
+
 ```bash
+# Install PyTorch with ROCm support
+pip install torch --extra-index-url https://download.pytorch.org/whl/rocm6.0
+
+# Install the project and its dependencies
+pip install .
+```
+
+Any other GPU
+
+```bash
+# Install the project and its dependencies
 pip install .
 ```
 
