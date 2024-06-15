@@ -3,7 +3,7 @@
 
 # Palma.py
 
-A lightweight REST API server that runs open source models `locally` or in the `cloud`. It uses `Starlette` and Hugging Face `Transformers`, with CUDA and Metal support, as well as concurrent and parallel requests.
+A lightweight REST API server that runs open source models `locally` or in the `cloud`. It uses `Starlette` and Hugging Face `Transformers`, with CUDA, AMD and Metal GPU support, as well as concurrent and parallel requests.
 
 ## Description
 
@@ -12,7 +12,7 @@ The goal of `Palma.py` is to enable LLM inference with minimal setup via REST AP
 - `Healthchecks` support for load balancer integration
 - Uses Hugging Face `Transformers` library for inference
 - Queue and Threads support for multiple inference requests
-- Support for Apple Metal, CUDA and CPU
+- Support for Apple Metal, AMD, CUDA and CPU
 - Support for CPU fallback on Apple Metal
 - Support for OpenAI API format, so you can use any library built for OpenAI
 
