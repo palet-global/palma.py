@@ -1,3 +1,6 @@
 .DS_Store
 venv/
 .env
+build/
+palma.py.egg-info
+__pycache__
