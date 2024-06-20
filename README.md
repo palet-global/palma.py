@@ -61,10 +61,11 @@ cd palma.py
 
 ```bash
 # create virtual enviroment
-# python3 if mac
+# if mac: python3 -m venv venv
 python -m venv venv
 
 # enter virtual enviroment
+# if windows: venv\Scripts\activate
 source venv/bin/activate
 ```
 
@@ -90,10 +91,12 @@ pip install .
 4. Adjust your enviroment variables
 - Copy .env.example to a new file named .env
 ```bash
+# if windows: copy .env.example .env
 cp .env.example .env
 ```
 - Read and update the .env file with your specific configuration
 ```bash
+# if windows: notepad .env
 nano .env
 ```
 
@@ -109,6 +112,7 @@ Then log into Hugging Face in your Python enviroment
  
 ```bash
 # enter virtual enviroment
+# if windows: venv\Scripts\activate
 source venv/bin/activate
 
 # login to hugging face
@@ -121,6 +125,7 @@ On the project directory
 
 ```bash
 # enter virtual enviroment
+# if windows: venv\Scripts\activate
 source venv/bin/activate
   
 # run server
